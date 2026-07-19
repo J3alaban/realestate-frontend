@@ -100,9 +100,9 @@ export default function UserAccount() {
             const payload: UserRequest = {
                 firstName: form.firstName,
                 lastName: form.lastName,
-                email: form.email || null,
-                phone: form.phone || null,
-                tcNo: form.tcNo || null,
+                email: form.email || undefined,
+                phone: form.phone || undefined,
+                tcNo: form.tcNo || undefined,
             };
 
             if (form.password?.trim()) {
