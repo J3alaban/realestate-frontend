@@ -10,7 +10,7 @@ import {
 import {
     getAllSubCategories,
     createSubCategory,
-} from "@/services/subcategoryService";
+} from "@/services/subCategoryService";
 
 import {
     Category,
