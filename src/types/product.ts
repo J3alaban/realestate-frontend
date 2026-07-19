@@ -23,9 +23,9 @@ export interface Product {
     weight: number | null;
     availabilityStatus: string | null;
 
-    // Artık URL listesi
-    images: string[];
+    dimensions?: ProductDimensions;
 
+    images: string[];
     thumbnail: string | null;
 
     userId: number;
