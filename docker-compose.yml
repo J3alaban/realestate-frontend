@@ -1,11 +1,10 @@
-version: "3.8"
-
 services:
   frontend:
-    build: .
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_API_URL: http://62.72.21.81:3013
     container_name: realestate-frontend
     ports:
       - "3014:80"
     restart: unless-stopped
-    environment:
-      NEXT_PUBLIC_API_URL: http://62.72.21.81:3013
