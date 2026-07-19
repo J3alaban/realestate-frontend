@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 import { getAllCategories } from "@/services/categoryService";
-import { getAllSubCategories } from "@/services/subcategoryService";
+import { getAllSubCategories } from "@/services/subCategoryService";
 import { getProductsBySubCategory } from "@/services/productService";
 
 import { Category } from "@/types/category";

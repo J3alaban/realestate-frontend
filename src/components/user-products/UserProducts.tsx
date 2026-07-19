@@ -22,7 +22,7 @@ import api from "@/services/api";
 
 import { getUserProducts } from "@/services/userService";
 import { getAllCategories } from "@/services/categoryService";
-import { getAllSubCategories } from "@/services/subcategoryService";
+import { getAllSubCategories } from "@/services/subCategoryService";
 
 import {
     createProduct,
