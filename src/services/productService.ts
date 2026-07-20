@@ -6,6 +6,7 @@ import {
     UpdateProductRequest,
 } from "@/types/product";
 
+
 export const getAllProducts = async (
     page: number = 0,
     size: number = 20
@@ -123,6 +124,37 @@ export const uploadImage = async (
             headers: {
                 "Content-Type": "multipart/form-data",
             },
+        }
+    );
+
+    return response.data;
+};
+
+
+export interface ProductFilterParams {
+    title?: string;
+    categoryId?: number;
+    subCategoryId?: number;
+    propertyType?: string;
+    roomCount?: number;
+    address?: string;
+    floor?: string;
+    minSquareMeter?: number;
+    maxSquareMeter?: number;
+    minPrice?: number;
+    maxPrice?: number;
+    page?: number;
+    size?: number;
+    sort?: string;
+}
+
+export const filterProducts = async (
+    filters: ProductFilterParams
+): Promise<ProductPage> => {
+    const response = await api.get<ProductPage>(
+        "/api/v1/products/filter",
+        {
+            params: filters,
         }
     );
 

@@ -1,5 +1,9 @@
-import Products  from "@/components/products/Products";
+import FilterPage from "@/components/filter/FilterPage";
 
 export default function Page() {
-    return <Products />;
+    return (
+        <main>
+            <FilterPage />
+        </main>
+    );
 }
