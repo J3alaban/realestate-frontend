@@ -429,20 +429,25 @@ const filteredSubCategories = subCategories.filter(
                                 className="bg-slate-950 border border-slate-800 rounded-xl px-4 py-3"
                             />
 
-                            <input
-                                type="number"
-                                placeholder="Fiyat"
-                                value={form.price || ""}
-                                onChange={(event) =>
-                                    setForm({
-                                        ...form,
-                                        price: Number(
-                                            event.target.value
-                                        ),
-                                    })
-                                }
-                                className="bg-slate-950 border border-slate-800 rounded-xl px-4 py-3"
-                            />
+                      <input
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="Fiyat"
+                          value={
+                              form.price
+                                  ? Number(form.price).toLocaleString("tr-TR")
+                                  : ""
+                          }
+                          onChange={(event) => {
+                              const value = event.target.value.replace(/\D/g, "");
+
+                              setForm({
+                                  ...form,
+                                  price: value ? Number(value) : 0,
+                              });
+                          }}
+                          className="bg-slate-950 border border-slate-800 rounded-xl px-4 py-3"
+                      />
 
                             <input
                                 type="number"

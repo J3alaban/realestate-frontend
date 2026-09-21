@@ -152,12 +152,10 @@ export default function Categories() {
                                 className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl"
                             >
                                 <div className="flex items-start justify-between mb-6">
-                                    <Link href={`/category/${category.slug}`}>
-                                        <h2 className="text-lg font-bold text-white hover:text-violet-400">
+
+                                        <h2 className="text-lg font-bold text-white">
                                             {category.name}
                                         </h2>
-                                    </Link>
-
 
                                 </div>
 
