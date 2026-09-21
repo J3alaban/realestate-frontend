@@ -9,7 +9,7 @@ import Login from "@/components/login/Login";
 import { searchService } from "@/services/searchService";
 import type { Product } from "@/types/product";
 import { getAllCategories } from "@/services/categoryService";
-import { getAllSubCategories } from "@/services/subcategoryService";
+import { getAllSubCategories } from "@/services/subCategoryService";
 
 import type { Category } from "@/types/category";
 import type { SubCategory } from "@/types/subcategory";
