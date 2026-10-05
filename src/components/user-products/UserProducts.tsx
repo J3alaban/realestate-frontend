@@ -20,7 +20,11 @@ import {
 
 import api from "@/services/api";
 
-import { getUserProducts } from "@/services/userService";
+import {
+    getUserProducts,
+    getUserProfile,
+} from "@/services/userService";
+
 import { getAllCategories } from "@/services/categoryService";
 import { getAllSubCategories } from "@/services/subCategoryService";
 import { Category } from "@/types/category";
@@ -85,6 +89,8 @@ export default function UserProducts() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
     const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+    const [showSubscriptionModal, setShowSubscriptionModal] =
+     useState(false);
 
 
     const [editingProduct, setEditingProduct] =
@@ -266,6 +272,7 @@ const filteredSubCategories = subCategories.filter(
         }
     };
 
+
     const handleDelete = async (productId: number) => {
         const confirmed = window.confirm(
             "Bu ilanı silmek istediğinize emin misiniz?"
@@ -348,34 +355,128 @@ const filteredSubCategories = subCategories.filter(
                             güncelleyebilir ve silebilirsiniz.
                         </p>
                     </div>
+                    {showSubscriptionModal && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+                            <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
 
-                {isLoggedIn && (
-                    <button
-                        type="button"
-                        onClick={() => {
-                            if (showForm) {
-                                cancelForm();
-                            } else {
-                                setEditingProduct(null);
-                                setForm(initialFormState);
-                                setShowForm(true);
-                            }
-                        }}
-                        className="flex items-center gap-2 bg-violet-600 hover:bg-violet-500 px-5 py-2.5 rounded-xl font-semibold transition"
-                    >
-                        {showForm ? (
-                            <>
-                                <X className="w-5 h-5" />
-                                Kapat
-                            </>
-                        ) : (
-                            <>
-                                <Plus className="w-5 h-5" />
-                                Yeni İlan
-                            </>
-                        )}
-                    </button>
-                )}
+                                <button
+                                    type="button"
+                                    onClick={() => setShowSubscriptionModal(false)}
+                                    className="absolute top-4 right-4 text-slate-400 hover:text-white transition"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+
+                                <div className="flex justify-center mb-5">
+                                    <div className="w-14 h-14 rounded-full bg-violet-950/50 flex items-center justify-center">
+                                        <AlertCircle className="w-7 h-7 text-violet-400" />
+                                    </div>
+                                </div>
+
+                                <h2 className="text-xl font-bold text-center text-white">
+                                    İlan Limitiniz Doldu
+                                </h2>
+
+                                <p className="text-slate-400 text-center mt-3 leading-relaxed">
+                                    Daha fazla ilan eklemek için mevcut planınızı
+                                    yükseltmeniz gerekiyor.
+                                </p>
+
+                                <div className="flex gap-3 mt-6">
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setShowSubscriptionModal(false)
+                                        }
+                                        className="flex-1 bg-slate-800 hover:bg-slate-700 px-4 py-3 rounded-xl font-semibold transition"
+                                    >
+                                        Vazgeç
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            window.location.href = "/subscription"
+                                        }
+                                        className="flex-1 bg-violet-600 hover:bg-violet-500 px-4 py-3 rounded-xl font-semibold transition"
+                                    >
+                                        Planları Gör
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+
+
+
+
+
+
+
+
+         {isLoggedIn && (
+             <button
+                 type="button"
+                 onClick={async () => {
+                     if (showForm) {
+                         cancelForm();
+                         return;
+                     }
+
+                     try {
+                         const userId = getStoredUserId();
+
+                         if (!userId) {
+                             setError("Kullanıcı bilgisi bulunamadı.");
+                             return;
+                         }
+
+                         const user = await getUserProfile(userId);
+
+                         const limits = {
+                             FREE: 3,
+                             BASIC: 10,
+                             PRO: 20,
+                             PREMIUM: Infinity,
+                         };
+
+                         const plan = user.subscriptionPlan ?? "FREE";
+                         const limit = limits[plan];
+
+                     if (products.length >= limit) {
+                         setShowSubscriptionModal(true);
+                         return;
+                     }
+
+                         setEditingProduct(null);
+                         setForm(initialFormState);
+                         setShowForm(true);
+
+                         window.scrollTo({
+                             top: 0,
+                             behavior: "smooth",
+                         });
+                     } catch {
+                         setError("Kullanıcı bilgileri alınamadı.");
+                     }
+                 }}
+
+                 className="flex items-center gap-2 bg-violet-600 hover:bg-violet-500 px-5 py-2.5 rounded-xl font-semibold transition"
+             >
+                 {showForm ? (
+                     <>
+                         <X className="w-5 h-5" />
+                         Kapat
+                     </>
+                 ) : (
+                     <>
+                         <Plus className="w-5 h-5" />
+                         Yeni İlan
+                     </>
+                 )}
+             </button>
+         )}
 
                 </div>
 
@@ -385,6 +486,9 @@ const filteredSubCategories = subCategories.filter(
                         {error}
                     </div>
                 )}
+
+
+
 
                 {showForm && (
                     <form
@@ -654,6 +758,7 @@ const filteredSubCategories = subCategories.filter(
                         </div>
                     </form>
                 )}
+
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {products.map((product) => {

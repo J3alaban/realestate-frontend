@@ -29,6 +29,7 @@ export interface User {
     tcNo?: string;
     role: string;
     emailVerified?: boolean;
+    subscriptionPlan?: "FREE" | "BASIC" | "PRO" | "PREMIUM";
 }
 
 export interface ProductPage {

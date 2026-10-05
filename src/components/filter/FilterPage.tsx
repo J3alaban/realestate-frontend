@@ -105,59 +105,79 @@ export default function FilterPage() {
         fetchInitialData();
     }, []);
 
-    const fetchFilteredProducts = async (selectedPage: number) => {
-        try {
-            setLoading(true);
-            setError("");
+   const fetchProducts = async (selectedPage: number) => {
+       try {
+           setLoading(true);
+           setError("");
 
-            const response: ProductPage = await filterProducts({
-                title: filters.title.trim() || undefined,
-                categoryId: filters.categoryId
-                    ? Number(filters.categoryId)
-                    : undefined,
-                subCategoryId: filters.subCategoryId
-                    ? Number(filters.subCategoryId)
-                    : undefined,
-                propertyType: filters.propertyType.trim() || undefined,
-                roomCount: filters.roomCount
-                    ? Number(filters.roomCount)
-                    : undefined,
-                address: filters.address.trim() || undefined,
-                floor: filters.floor.trim() || undefined,
-                minSquareMeter: filters.minSquareMeter
-                    ? Number(filters.minSquareMeter)
-                    : undefined,
-                maxSquareMeter: filters.maxSquareMeter
-                    ? Number(filters.maxSquareMeter)
-                    : undefined,
-                minPrice: filters.minPrice
-                    ? Number(filters.minPrice)
-                    : undefined,
-                maxPrice: filters.maxPrice
-                    ? Number(filters.maxPrice)
-                    : undefined,
-                page: selectedPage,
-                size: 20,
-                sort: filters.sort,
-            });
+           const hasFilters =
+               filters.title.trim() ||
+               filters.categoryId ||
+               filters.subCategoryId ||
+               filters.propertyType.trim() ||
+               filters.roomCount ||
+               filters.address.trim() ||
+               filters.floor.trim() ||
+               filters.minSquareMeter ||
+               filters.maxSquareMeter ||
+               filters.minPrice ||
+               filters.maxPrice;
 
-            setProducts(response.content);
-            setTotalPages(response.totalPages);
-            setPage(response.number);
-        } catch (error) {
-            console.error(error);
-            setProducts([]);
-            setError("Filtreleme sırasında hata oluştu.");
-        } finally {
-            setLoading(false);
-        }
-    };
+           let response: ProductPage;
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        await fetchFilteredProducts(0);
-    };
+           if (hasFilters) {
+               response = await filterProducts({
+                   title: filters.title.trim() || undefined,
+                   categoryId: filters.categoryId
+                       ? Number(filters.categoryId)
+                       : undefined,
+                   subCategoryId: filters.subCategoryId
+                       ? Number(filters.subCategoryId)
+                       : undefined,
+                   propertyType:
+                       filters.propertyType.trim() || undefined,
+                   roomCount: filters.roomCount
+                       ? Number(filters.roomCount)
+                       : undefined,
+                   address: filters.address.trim() || undefined,
+                   floor: filters.floor.trim() || undefined,
+                   minSquareMeter: filters.minSquareMeter
+                       ? Number(filters.minSquareMeter)
+                       : undefined,
+                   maxSquareMeter: filters.maxSquareMeter
+                       ? Number(filters.maxSquareMeter)
+                       : undefined,
+                   minPrice: filters.minPrice
+                       ? Number(filters.minPrice)
+                       : undefined,
+                   maxPrice: filters.maxPrice
+                       ? Number(filters.maxPrice)
+                       : undefined,
+                   page: selectedPage,
+                   size: 20,
+                   sort: filters.sort,
+               });
+           } else {
+               response = await getAllProducts(selectedPage, 20);
+           }
 
+           setProducts(response.content);
+           setTotalPages(response.totalPages);
+           setPage(response.number);
+
+       } catch (error) {
+           console.error(error);
+           setProducts([]);
+           setError("İlanlar alınırken bir hata oluştu.");
+       } finally {
+           setLoading(false);
+       }
+   };
+
+const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await fetchProducts(0);
+};
     const handleReset = async () => {
         setFilters(initialFilters);
         setPage(0);
@@ -170,6 +190,7 @@ export default function FilterPage() {
 
             setProducts(response.content);
             setTotalPages(response.totalPages);
+            setPage(response.number);
         } catch (error) {
             console.error(error);
             setError("İlanlar alınamadı.");
@@ -384,7 +405,7 @@ export default function FilterPage() {
                                             key={product.id}
                                             type="button"
                                             onClick={() => router.push(`/products/${product.id}`)}
-                                            className="group flex flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/60 text-left transition hover:-translate-y-1 hover:border-violet-500/50"
+                                            className="group flex flex-col overflow-hidden rounded-3xl border-2 border-slate-400/30 bg-slate-900/60 text-left transition-all duration-300 hover:-translate-y-1 hover:border-violet-600 hover:ring-2 hover:ring-violet-600/50"
                                         >
                                             {/* Görsel Alanı */}
                                             <div className="relative h-48 w-full overflow-hidden bg-slate-800">
@@ -458,7 +479,7 @@ export default function FilterPage() {
                                 <button
                                     type="button"
                                     disabled={page === 0 || loading}
-                                    onClick={() => fetchFilteredProducts(page - 1)}
+                                    onClick={() => fetchProducts(page - 1)}
                                     className="rounded-xl border border-slate-800 px-5 py-2.5 text-sm disabled:opacity-40 hover:bg-slate-900"
                                 >
                                     Önceki
@@ -471,7 +492,7 @@ export default function FilterPage() {
                                 <button
                                     type="button"
                                     disabled={page + 1 >= totalPages || loading}
-                                    onClick={() => fetchFilteredProducts(page + 1)}
+                                    onClick={() => fetchProducts(page + 1)}
                                     className="rounded-xl border border-slate-800 px-5 py-2.5 text-sm disabled:opacity-40 hover:bg-slate-900"
                                 >
                                     Sonraki
