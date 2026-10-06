@@ -8,7 +8,7 @@ export interface Product {
     id: number;
     title: string;
     description: string;
-    subCategoryId: number;
+    subCategoryId: number | null;
     subCategoryName: string;
     categoryId: number;
     categoryName: string;
